@@ -77,25 +77,140 @@
 
     <script> 
       const display = document.getElementById("display");
-      display.innerText = data.displayString;
 
-      numbersArr.map((elem, i) => {
-        elem.addEventListener("click", (evt) => {
-          data.appendStringNum(elem.innerText);
-        });
-      });
+let data = {
+  displayString: "",
 
-      operatorsArr.map((elem, i) => {
-        elem.addEventListener("click", (evt) => {
-          data.appendStringOperator(elem.innerText);
-        });
-      });
+  appendStringNum(num) {
+    this.displayString += num;
+    display.innerText = this.displayString;
+  },
 
-      parenthesisArr.map((elem, i) => {
-        elem.addEventListener("click", (evt) => {
-          data.appendStringParenthesis(elem.innerText);
-        });
-      });
+  appendStringOperator(operator) {
+    this.displayString += operator;
+    display.innerText = this.displayString;
+  },
+
+  appendStringParenthesis(parenthesis) {
+    this.displayString += parenthesis;
+    display.innerText = this.displayString;
+  },
+
+  calculate() {
+    const postfixExpression = infixToPostfix(this.displayString); // Convert to postfix
+    const result = evaluatePostfix(postfixExpression); // Evaluate the postfix expression
+    this.displayString = result.toString(); // Set the result as the display string
+    display.innerText = this.displayString;
+  }
+};
+
+// Event listeners for buttons
+const numbersArr = document.querySelectorAll(".number");
+const operatorsArr = document.querySelectorAll(".operator");
+const parenthesisArr = document.querySelectorAll(".parenthesis");
+const equalsButton = document.querySelector(".equals");
+
+numbersArr.forEach((elem) => {
+  elem.addEventListener("click", () => {
+    data.appendStringNum(elem.innerText);
+  });
+});
+
+operatorsArr.forEach((elem) => {
+  elem.addEventListener("click", () => {
+    data.appendStringOperator(elem.innerText);
+  });
+});
+
+parenthesisArr.forEach((elem) => {
+  elem.addEventListener("click", () => {
+    data.appendStringParenthesis(elem.innerText);
+  });
+});
+
+equalsButton.addEventListener("click", () => {
+  data.calculate();
+});
+
+// Helper functions for converting infix to postfix and evaluating the result
+function infixToPostfix(exp) {
+  const precedence = {
+    '+': 1,
+    '-': 1,
+    '*': 2,
+    '/': 2,
+  };
+
+  const isOperator = (ch) => ['+', '-', '*', '/'].includes(ch);
+  const isParenthesis = (ch) => ['(', ')'].includes(ch);
+  const isOpeningParenthesis = (ch) => ch === '(';
+  const isClosingParenthesis = (ch) => ch === ')';
+  
+  let s = []; // Stack for operators and parentheses
+  let res = ''; // Result (postfix expression)
+  
+  for (let i = 0; i < exp.length; i++) {
+    const char = exp[i];
+
+    if (/\d/.test(char)) {
+      res += char; // If it's a number, add it to the result
+    } else if (isOperator(char)) {
+      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1]) && precedence[s[s.length - 1]] >= precedence[char]) {
+        res += s.pop(); // Pop operators of higher precedence
+      }
+      s.push(char); // Push current operator onto stack
+    } else if (isOpeningParenthesis(char)) {
+      s.push(char); // Push opening parenthesis onto stack
+    } else if (isClosingParenthesis(char)) {
+      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1])) {
+        res += s.pop(); // Pop operators until matching opening parenthesis
+      }
+      s.pop(); // Pop the opening parenthesis
+    }
+  }
+
+  while (s.length > 0) {
+    res += s.pop(); // Pop any remaining operators
+  }
+
+  return res;
+}
+
+function evaluatePostfix(exp) {
+  let stack = [];
+
+  for (let i = 0; i < exp.length; i++) {
+    const char = exp[i];
+
+    if (/\d/.test(char)) {
+      stack.push(Number(char)); // Push operand (number) onto stack
+    } else if (['+', '-', '*', '/'].includes(char)) {
+      let op2 = stack.pop();
+      let op1 = stack.pop();
+      let result;
+
+      // Perform the operation based on the operator
+      switch (char) {
+        case '+':
+          result = op1 + op2;
+          break;
+        case '-':
+          result = op1 - op2;
+          break;
+        case '*':
+          result = op1 * op2;
+          break;
+        case '/':
+          result = op1 / op2;
+          break;
+      }
+
+      stack.push(result); // Push the result back onto the stack
+    }
+  }
+
+  return stack.pop(); // Final result after evaluation
+}
       
     </script>
   </body>
