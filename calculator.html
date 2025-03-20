@@ -76,154 +76,142 @@
     </div>
 
     <script> 
-	  const display = document.getElementById("display");
+	const display = document.getElementById("display");
 
-let data = {
-  displayString: "",
-
-  appendStringNum(num) {
-    this.displayString += num;
-    display.innerText = this.displayString; 
-  },
-
-  appendStringOperator(operator) {
-    this.displayString += operator;
-    display.innerText = this.displayString; 
-  },
-
-  appendStringParenthesis(parenthesis) {
-    this.displayString += parenthesis;
-    display.innerText = this.displayString;
-  },
-
-  calculate() {
-      const postfixExpression = infixToPostfix(this.displayString); 
-      const result = evaluatePostfix(postfixExpression); 
-      this.displayString = result.toString(); 
-      display.innerText = this.displayString;
-    },
-
-  clear() {
-    this.displayString = "";
-    display.innerText = this.displayString;
-  }
-};
-
-const numbersArr = document.querySelectorAll(".number");
-const operatorsArr = document.querySelectorAll(".operator");
-const parenthesisArr = document.querySelectorAll(".parenthesis");
-const equalsButton = document.querySelector(".equals");
-const clearButton = document.createElement("button");
-
-numbersArr.forEach((elem) => {
-  elem.addEventListener("click", () => {
-    data.appendStringNum(elem.innerText);
-  });
-});
-
-operatorsArr.forEach((elem) => {
-  elem.addEventListener("click", () => {
-    data.appendStringOperator(elem.innerText);
-  });
-});
-
-parenthesisArr.forEach((elem) => {
-  elem.addEventListener("click", () => {
-    data.appendStringParenthesis(elem.innerText);
-  });
-});
-
-equalsButton.addEventListener("click", () => {
-  data.calculate();
-});
-
-clearButton.innerText = "CLR";
-clearButton.addEventListener("click", () => {
-  data.clear();
-});
-document.body.appendChild(clearButton);
-
-function infixToPostfix(exp) {
-  const precedence = {
-    '+': 1,
-    '-': 1,
-    '*': 2,
-    '/': 2,
-  };
-
-  const isOperator = (ch) => ['+', '-', '*', '/'].includes(ch);
-  const isOpeningParenthesis = (ch) => ch === '(';
-  const isClosingParenthesis = (ch) => ch === ')';
-
-  let s = []; 
-  let res = ''; 
-
-  for (let i = 0; i < exp.length; i++) {
-    const curr = exp[i]; 
-
-    if (!isOperator(curr) && !isOpeningParenthesis(curr) && !isClosingParenthesis(curr)) {
-      res += curr; 
-    }
-    else if (isOperator(curr)) {
-      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1]) && precedence[s[s.length - 1]] >= precedence[curr]) {
-        res += s.pop(); 
-      }
-      s.push(curr); 
-    }
-
-    else if (isOpeningParenthesis(curr)) {
-      s.push(curr);
-    }
-    else if (isClosingParenthesis(curr)) {
-      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1])) {
-        res += s.pop();  
-      }
-      s.pop(); 
-    }
-  }
-
-
-  while (s.length > 0) {
-    res += s.pop();  
-  }
-
-  return res;
-}
-
-function evaluatePostfix(exp) {
-  let s = [];
-
-  for (let i = 0; i < exp.length; i++) {
-    const curr = exp[i];  
-
-
-    if (!isNaN(curr)) {
-      s.push(Number(curr));
-    }
-
-    else if (['+', '-', '*', '/'].includes(curr)) {
-      const op2 = s.pop(); 
-      const op1 = s.pop(); 
-      
-      let result;
-      
-
-      if (curr === '+') {
-        result = op1 + op2;
-      } else if (curr === '-') {
-        result = op1 - op2;
-      } else if (curr === '*') {
-        result = op1 * op2;
-      } else if (curr === '/') {
-        result = op1 / op2;
-      }
-
-      s.push(result);
-    }
-  }
-
-  return s.pop();
-}
+	let data = {
+	  displayString: "",
+	
+	  appendStringNum(num) {
+	    this.displayString += num;
+	    display.innerText = this.displayString; 
+	  },
+	
+	  appendStringOperator(operator) {
+	    this.displayString += operator;
+	    display.innerText = this.displayString; 
+	  },
+	
+	  appendStringParenthesis(parenthesis) {
+	    this.displayString += parenthesis;
+	    display.innerText = this.displayString;
+	  },
+	
+	  calculate() {
+	      const postfixExpression = infixToPostfix(this.displayString); 
+	      const result = evaluatePostfix(postfixExpression); 
+	      this.displayString = result.toString(); 
+	      display.innerText = this.displayString;
+	    },
+	
+	  clear() {
+	    this.displayString = "";
+	    display.innerText = this.displayString;
+	  }
+	};
+	
+	const numbersArr = document.querySelectorAll(".number");
+	const operatorsArr = document.querySelectorAll(".operator");
+	const parenthesisArr = document.querySelectorAll(".parenthesis");
+	const equalsButton = document.querySelector(".equals");
+	const clearButton = document.createElement("button");
+	
+	numbersArr.forEach((elem) => {
+	  elem.addEventListener("click", () => {
+	    data.appendStringNum(elem.innerText);
+	  });
+	});
+	
+	operatorsArr.forEach((elem) => {
+	  elem.addEventListener("click", () => {
+	    data.appendStringOperator(elem.innerText);
+	  });
+	});
+	
+	parenthesisArr.forEach((elem) => {
+	  elem.addEventListener("click", () => {
+	    data.appendStringParenthesis(elem.innerText);
+	  });
+	});
+	
+	equalsButton.addEventListener("click", () => {
+	  data.calculate();
+	});
+	
+	clearButton.innerText = "CLR";
+	clearButton.addEventListener("click", () => {
+	  data.clear();
+	});
+	document.body.appendChild(clearButton);
+	
+	function infixToPostfix(exp) {
+	  const precedence = {
+	    '+': 1,
+	    '-': 1,
+	    '*': 2,
+	    '/': 2,
+	  };
+		
+	  const isOperator = (ch) => ['+', '-', '*', '/'].includes(ch);
+	  const isOpeningParenthesis = (ch) => ch === '(';
+	  const isClosingParenthesis = (ch) => ch === ')';
+		
+	  let s = []; 
+	  let res = ''; 
+	
+	  for (let i = 0; i < exp.length; i++) {
+	    const curr = exp[i]; 
+	    if (!isOperator(curr) && !isOpeningParenthesis(curr) && !isClosingParenthesis(curr)) {
+	      res += curr; 
+	    }
+	    else if (isOperator(curr)) {
+	      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1]) && precedence[s[s.length - 1]] >= precedence[curr]) {
+	        res += s.pop(); 
+	      }
+	      s.push(curr); 
+	    }
+	    else if (isOpeningParenthesis(curr)) {
+	      s.push(curr);
+	    }
+	    else if (isClosingParenthesis(curr)) {
+	      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1])) {
+	        res += s.pop();  
+	      }
+	      s.pop(); 
+	    }
+	  }
+	  while (s.length > 0) {
+	    res += s.pop();  
+	  }
+	  return res;
+	}
+	
+	function evaluatePostfix(exp) {
+	  let s = [];
+	  for (let i = 0; i < exp.length; i++) {
+	    const curr = exp[i];  
+	    if (!isNaN(curr)) {
+	      s.push(Number(curr));
+	    }
+	
+	    else if (['+', '-', '*', '/'].includes(curr)) {
+	      const op2 = s.pop(); 
+	      const op1 = s.pop();    
+	      let res;
+	
+	      if (curr === '+') {
+	        res = op1 + op2;
+	      } else if (curr === '-') {
+	        res = op1 - op2;
+	      } else if (curr === '*') {
+	        res = op1 * op2;
+	      } else if (curr === '/') {
+	        res = op1 / op2;
+	      }
+	      s.push(res);
+	    }
+	  }
+	  return s.pop();
+	}
       
     </script>
   </body>
