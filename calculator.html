@@ -76,19 +76,19 @@
     </div>
 
     <script> 
-      const display = document.getElementById("display");
+	  const display = document.getElementById("display");
 
 let data = {
   displayString: "",
 
   appendStringNum(num) {
     this.displayString += num;
-    display.innerText = this.displayString;
+    display.innerText = this.displayString; 
   },
 
   appendStringOperator(operator) {
     this.displayString += operator;
-    display.innerText = this.displayString;
+    display.innerText = this.displayString; 
   },
 
   appendStringParenthesis(parenthesis) {
@@ -97,18 +97,23 @@ let data = {
   },
 
   calculate() {
-    const postfixExpression = infixToPostfix(this.displayString); // Convert to postfix
-    const result = evaluatePostfix(postfixExpression); // Evaluate the postfix expression
-    this.displayString = result.toString(); // Set the result as the display string
+      const postfixExpression = infixToPostfix(this.displayString); 
+      const result = evaluatePostfix(postfixExpression); 
+      this.displayString = result.toString(); 
+      display.innerText = this.displayString;
+    },
+
+  clear() {
+    this.displayString = "";
     display.innerText = this.displayString;
   }
 };
 
-// Event listeners for buttons
 const numbersArr = document.querySelectorAll(".number");
 const operatorsArr = document.querySelectorAll(".operator");
 const parenthesisArr = document.querySelectorAll(".parenthesis");
 const equalsButton = document.querySelector(".equals");
+const clearButton = document.createElement("button");
 
 numbersArr.forEach((elem) => {
   elem.addEventListener("click", () => {
@@ -132,7 +137,12 @@ equalsButton.addEventListener("click", () => {
   data.calculate();
 });
 
-// Helper functions for converting infix to postfix and evaluating the result
+clearButton.innerText = "CLR";
+clearButton.addEventListener("click", () => {
+  data.clear();
+});
+document.body.appendChild(clearButton);
+
 function infixToPostfix(exp) {
   const precedence = {
     '+': 1,
@@ -142,74 +152,77 @@ function infixToPostfix(exp) {
   };
 
   const isOperator = (ch) => ['+', '-', '*', '/'].includes(ch);
-  const isParenthesis = (ch) => ['(', ')'].includes(ch);
   const isOpeningParenthesis = (ch) => ch === '(';
   const isClosingParenthesis = (ch) => ch === ')';
-  
-  let s = []; // Stack for operators and parentheses
-  let res = ''; // Result (postfix expression)
-  
-  for (let i = 0; i < exp.length; i++) {
-    const char = exp[i];
 
-    if (/\d/.test(char)) {
-      res += char; // If it's a number, add it to the result
-    } else if (isOperator(char)) {
-      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1]) && precedence[s[s.length - 1]] >= precedence[char]) {
-        res += s.pop(); // Pop operators of higher precedence
+  let s = []; 
+  let res = ''; 
+
+  for (let i = 0; i < exp.length; i++) {
+    const curr = exp[i]; 
+
+    if (!isOperator(curr) && !isOpeningParenthesis(curr) && !isClosingParenthesis(curr)) {
+      res += curr; 
+    }
+    else if (isOperator(curr)) {
+      while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1]) && precedence[s[s.length - 1]] >= precedence[curr]) {
+        res += s.pop(); 
       }
-      s.push(char); // Push current operator onto stack
-    } else if (isOpeningParenthesis(char)) {
-      s.push(char); // Push opening parenthesis onto stack
-    } else if (isClosingParenthesis(char)) {
+      s.push(curr); 
+    }
+
+    else if (isOpeningParenthesis(curr)) {
+      s.push(curr);
+    }
+    else if (isClosingParenthesis(curr)) {
       while (s.length > 0 && !isOpeningParenthesis(s[s.length - 1])) {
-        res += s.pop(); // Pop operators until matching opening parenthesis
+        res += s.pop();  
       }
-      s.pop(); // Pop the opening parenthesis
+      s.pop(); 
     }
   }
 
+
   while (s.length > 0) {
-    res += s.pop(); // Pop any remaining operators
+    res += s.pop();  
   }
 
   return res;
 }
 
 function evaluatePostfix(exp) {
-  let stack = [];
+  let s = [];
 
   for (let i = 0; i < exp.length; i++) {
-    const char = exp[i];
+    const curr = exp[i];  
 
-    if (/\d/.test(char)) {
-      stack.push(Number(char)); // Push operand (number) onto stack
-    } else if (['+', '-', '*', '/'].includes(char)) {
-      let op2 = stack.pop();
-      let op1 = stack.pop();
+
+    if (!isNaN(curr)) {
+      s.push(Number(curr));
+    }
+
+    else if (['+', '-', '*', '/'].includes(curr)) {
+      const op2 = s.pop(); 
+      const op1 = s.pop(); 
+      
       let result;
+      
 
-      // Perform the operation based on the operator
-      switch (char) {
-        case '+':
-          result = op1 + op2;
-          break;
-        case '-':
-          result = op1 - op2;
-          break;
-        case '*':
-          result = op1 * op2;
-          break;
-        case '/':
-          result = op1 / op2;
-          break;
+      if (curr === '+') {
+        result = op1 + op2;
+      } else if (curr === '-') {
+        result = op1 - op2;
+      } else if (curr === '*') {
+        result = op1 * op2;
+      } else if (curr === '/') {
+        result = op1 / op2;
       }
 
-      stack.push(result); // Push the result back onto the stack
+      s.push(result);
     }
   }
 
-  return stack.pop(); // Final result after evaluation
+  return s.pop();
 }
       
     </script>
