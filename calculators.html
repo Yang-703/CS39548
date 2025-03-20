@@ -3,6 +3,46 @@
     <title>Calculator</title>
   </head>
   
+  <style>
+    .button {
+      width: 80px; 
+      height: 40px;
+      background-color: #6969b3;
+      border: 8px;
+      color: #ffffffca;
+      border-radius: 6px;
+      box-shadow: 3px 5px 5px black;
+    }
+
+    button:hover {
+      background-color: #98c1d9;
+    }
+
+    button:active {
+      box-shadow: 2px 4px 4px black;
+    }
+
+    .flexContainer {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      align-items: baseline;
+      width: 390px;
+      row-gap: 8px;
+    }
+    
+    .displayContainer {
+      display: flex;
+      justify-content: flex-end;
+      width: 390px;
+    }
+
+    #display {
+      margin-right: 20px;
+    }
+  </style>
+  
   <body> 
     <h1>Calculator</h1>
     <div class="displayContainer">
@@ -14,37 +54,54 @@
         <button class="button number">7</button>
         <button class="button number">8</button>
         <button class="button number">9</button>
+        <button class="button operator">/</button>
       </div>
       <div>
         <button class="button number">4</button>
         <button class="button number">5</button>
         <button class="button number">6</button>
+        <button class="button operator">*</button>
       </div>
       <div>
         <button class="button number">1</button>
         <button class="button number">2</button>
         <button class="button number">3</button>
+        <button class="button operator">-</button>
       </div>
       <div>
         <button class="button number">0</button>
         <button class="button decimal">.</button>
         <button class="button equals">=</button>
+        <button class="button operator">+</button>
       </div>
     </div>
-
     <div>
-      <button class="button operator">+</button>
-      <button class="button operator">-</button>
-      <button class="button operator">/</button>
-      <button class="button operator">*</button>
-    </div>
-    <div>
-      <button class="button parentheses">(</button>
-      <button class="button parentheses">)</button>
+      <button class="button parenthesis">(</button>
+      <button class="button parenthesis">)</button>
     </div>
 
-    <script>
+    <script> 
+      const display = document.getElementById("display");
+      display.innerText = data.displayString;
+
+      numbersArr.map((elem, i) => {
+        elem.addEventListener("click", (evt) => {
+          data.appendStringNum(elem.innerText);
+        });
+      });
+
+      operatorsArr.map((elem, i) => {
+        elem.addEventListener("click", (evt) => {
+          data.appendStringOperator(elem.innerText);
+        });
+      });
+
+      parenthesisArr.map((elem, i) => {
+        elem.addEventListener("click", (evt) => {
+          data.appendStringParenthesis(elem.innerText);
+        });
+      });
+      
     </script>
-    
   </body>
 </html> 
